@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import morgan from "morgan";
+import { notFound, errorHandler } from "./middlewares/error";
 
 class App {
   private app: Application;
@@ -21,6 +22,8 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(morgan("dev"));
+    this.app.use(notFound);
+    this.app.use(errorHandler);
   }
 
   /**
