@@ -1,15 +1,18 @@
-import http, { Server } from "http";
-import dotenv from "dotenv";
-import App from "./app";
-import { Socket } from "./socket";
-import DB from "./database/db";
+import http, { Server } from 'http';
+import dotenv from 'dotenv';
+import App from './app';
+import { Socket } from './socket';
+import { dbInstance } from './database/db';
+import Event from './events/Event';
 
 const port: number = Number(process.env.PORT) || 3001;
+const event = new Event().listen();
 const app: App = new App();
-const db: DB = new DB();
+global['eventEmitter'] = event.getEventEmitter();
 
 dotenv.config();
-db.authenticate();
+dbInstance.authenticate();
+
 const server: Server = http.createServer(app.getApp());
 
 server.listen(port, () =>

@@ -1,9 +1,16 @@
-import { Router } from "express";
-import { UsersController } from "../controllers/UsersController";
+import { Router } from 'express';
+import { UsersController } from '../controllers/UsersController';
+import { userValidation } from '../middlewares/validation/userValidation';
 
 const usersRoutes = Router();
-const users = new UsersController();
+const usersController = new UsersController();
+const { signupValidationResult, signupValidator } = userValidation;
 
-usersRoutes.post("/signup", users.signup);
+usersRoutes.post(
+  '/signup',
+  signupValidator,
+  signupValidationResult,
+  usersController.signup
+);
 
 export default usersRoutes;

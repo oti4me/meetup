@@ -37,7 +37,7 @@ class DB {
    *
    * @returns {Sequelize}
    */
-  public getDB(): Sequelize {
+  public get(): Sequelize {
     return this.sequelize;
   }
 
@@ -54,4 +54,5 @@ class DB {
   }
 }
 
+export const dbInstance = new DB();
 export default DB;

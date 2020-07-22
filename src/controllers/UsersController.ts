@@ -1,22 +1,41 @@
-import { Request, Response } from "express";
-import { UserRepository } from "../repositories/UserRepository";
+import { Request, Response } from 'express';
+import { CONFLICT } from 'http-status-codes';
+import { UserRepository } from '../repositories/UserRepository';
+import { created, conflict } from '../helpers/response';
 
 export class UsersController {
   private userRepo: UserRepository;
 
+  /**
+   * Creates an instance of UsersController.
+   *
+   * @memberOf UsersController
+   */
   constructor() {
     this.userRepo = new UserRepository();
   }
 
-  public signup = async (req: Request, res: Response) => {
+  /**
+   * Creates a use account
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Function} next
+   *
+   * @memberOf UsersController
+   */
+  public signup = async (
+    req: Request,
+    res: Response,
+    next: (error: any) => {}
+  ) => {
     const [user, error] = await this.userRepo.signup(req.body);
-
     if (error) {
-      // throw the appropriate error message
+      return error.status && error.status == CONFLICT
+        ? conflict(res, error.message)
+        : next(error);
     }
 
-    return res.status(201).json({
-      user,
-    });
+    return created(res, user);
   };
 }
