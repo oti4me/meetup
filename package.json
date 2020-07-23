@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --require ts-node/register ./test/**/*",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --require ts-node/register ./test/**/*",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "node",
     "dev": "nodemon ./src/server.ts",
     "migrate:test": "./node_modules/.bin/sequelize db:migrate:undo:all && ./node_modules/.bin/sequelize db:migrate"
@@ -42,11 +43,13 @@
     "@types/sequelize": "^4.28.9",
     "@types/socket.io": "^2.1.8",
     "chai": "^4.2.0",
+    "coveralls": "^3.1.0",
     "cross-env": "^7.0.2",
     "faker": "^4.1.0",
     "mocha": "^8.0.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
     "sequelize-cli": "^6.2.0",
     "supertest": "^4.0.2",
     "ts-node": "^8.10.2",

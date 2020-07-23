@@ -2,7 +2,9 @@
 
 ## Introduction
 
-**`Meetup NG`** is a social network platform with the intention to build stronger relation with loved ones by send text, images, videos, and voice call. Expected features;
+**`Meetup NG`** is a social network platform with the intention to build stronger relationships with loved ones by sending memories in form of text, images, videos, and voice call.
+
+#### Expected features
 
 - User Signup.
 - User Signin.
@@ -47,10 +49,9 @@
 
 ## Tests
 
-- The tests have been written using **[Mocha](https://www.npmjs.com/package/mocha)** , **[Chai](https://www.npmjs.com/package/chai)** as it's assertion library and **[Supertest](https://www.npmjs.com/package/supertest)** class.
-- To run the tests, navigate to the project's folder and open
-- Issue the following command on terminal.
-- `npm test`
+- The tests have been written using **[Mocha](https://www.npmjs.com/package/mocha)** , **[Chai](https://www.npmjs.com/package/chai)** as it's assertion library and **[Supertest](https://www.npmjs.com/package/supertest)**.
+- To run the tests, navigate to the project's folder.
+- Issue the following command on the terminal `npm test`
 - If the tests are successful, they will complete without failures or errors.
 
 ## Technologies
