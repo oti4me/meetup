@@ -52,4 +52,23 @@ export const userValidation = {
       .isMobilePhone('en-NG')
       .withMessage('Invalid mobile number provided'),
   ],
+
+  signinValidationResult: (req: Request, res: Response, next: () => {}) => {
+    const { email, password } = req.body;
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) return unporecessed(res, result.array());
+
+    req.body = { email, password };
+
+    return next();
+  },
+
+  signinValidation: [
+    check('password')
+      .optional(false)
+      .isLength({ min: 4, max: 20 })
+      .withMessage('Password must be at 4-20 chars long'),
+    check('email').optional(false).isEmail().withMessage('Invalid email'),
+  ],
 };

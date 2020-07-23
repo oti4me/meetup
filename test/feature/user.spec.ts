@@ -2,28 +2,9 @@ import chai from 'chai';
 import supertest from 'supertest';
 import App from '../../src/app';
 import { User } from '../../src/models/User';
+import { validUser, invalidEmail } from '../data';
 
 const expect = chai.expect;
-
-const validUser = {
-  username: 'oti4me',
-  firstName: 'Henry',
-  lastName: 'Otighe',
-  email: 'oti4me+211@gmail.com',
-  phone: '07067143161',
-  password: 'oti4me',
-  Jasper: 'this is the shit',
-};
-
-const invalidEmail = {
-  username: 'oti4me',
-  firstName: 'Henry',
-  lastName: 'Otighe',
-  email: 'oti4megmail.com',
-  phone: '07067143161',
-  password: 'oti4me',
-  Jasper: 'this is the shit',
-};
 
 const request = supertest(new App().getApp());
 
@@ -78,6 +59,46 @@ describe('Users Controller', () => {
           const { body } = res;
           if (err) return done(err);
           expect(body.message[0].msg).to.equal('Invalid email provided');
+          done();
+        });
+    });
+  });
+  describe('Signin user POST: /api/v1/users/signin', () => {
+    it('should successfully log in a registered user', (done) => {
+      expect(true).to.equal(true);
+      request
+        .post('/api/v1/users/signin')
+        .send(validUser)
+        .expect(200)
+        .end((err, res) => {
+          const { body } = res.body;
+          if (err) return done(err);
+          expect(body.email).to.equal(validUser.email);
+          done();
+        });
+    });
+    it('should return a 400 error if password field is empty', (done) => {
+      const invalidaPassword = { ...validUser, password: 're' };
+      request
+        .post('/api/v1/users/signin')
+        .send(invalidaPassword)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.message[0].msg).to.equal(
+            'Password must be at 4-20 chars long'
+          );
+          expect(res.status).to.equal(422);
+          done();
+        });
+    });
+    it('should return a 422 error if email field is invalid', (done) => {
+      request
+        .post('/api/v1/users/signin')
+        .send(invalidEmail)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.message[0].msg).to.equal('Invalid email');
+          expect(res.status).to.equal(422);
           done();
         });
     });
