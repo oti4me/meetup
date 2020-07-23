@@ -1,9 +1,6 @@
 version: 2.0
 jobs:
   build:
-    environment:
-      CC_TEST_REPORTER_ID: 70bc935693ed7d6de36c68b2007c1afbe5ea81cf28178c4dfded88805a2d9736
-      NODE_ENV: test
     docker:
       - image: circleci/node:12.14.1
         environment:
