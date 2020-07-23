@@ -46,6 +46,15 @@ export class UsersController {
     return created(res, user);
   };
 
+  /**
+   * Signs a use into the application
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Function} next
+   *
+   * @memberOf UsersController
+   */
   public signin = async (
     req: Request,
     res: Response,

@@ -53,6 +53,14 @@ export const userValidation = {
       .withMessage('Invalid mobile number provided'),
   ],
 
+  /**
+   * Checks for signin validation result and return next if successful
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {() => {}} next
+   * @returns
+   */
   signinValidationResult: (req: Request, res: Response, next: () => {}) => {
     const { email, password } = req.body;
     const result = validationResult(req);
