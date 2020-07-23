@@ -3,6 +3,14 @@ import { check, validationResult } from 'express-validator';
 import { unporecessed } from '../../helpers/response';
 
 export const userValidation = {
+  /**
+   * Checks for validation result, returns next of successful
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {() => {}} next
+   * @returns
+   */
   signupValidationResult: (req: Request, res: Response, next: () => {}) => {
     const { firstName, lastName, email, username, phone, password } = req.body;
     const result = validationResult(req);

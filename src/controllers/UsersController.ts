@@ -4,6 +4,13 @@ import { UserRepository } from '../repositories/UserRepository';
 import { created, conflict } from '../helpers/response';
 
 export class UsersController {
+  /**
+   * User repo instance variable
+   *
+   * @private
+   * @type {UserRepository}
+   * @memberOf UsersController
+   */
   private userRepo: UserRepository;
 
   /**

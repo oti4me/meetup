@@ -1,6 +1,14 @@
 import { User } from '../models/User';
 
 export class UserRepository {
+  /**
+   * Adds a user account details to the database
+   *
+   * @param {*} userDetails
+   * @returns
+   *
+   * @memberOf UserRepository
+   */
   public async signup(userDetails: any) {
     try {
       const exists = await User.findOne({
