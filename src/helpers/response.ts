@@ -5,6 +5,7 @@ import {
   UNPROCESSABLE_ENTITY,
   NOT_FOUND,
   BAD_REQUEST,
+  UNAUTHORIZED,
 } from 'http-status-codes';
 import { Response } from 'express';
 
@@ -74,7 +75,7 @@ export const ok = (
  * @param {any} res
  * @param {any} message
  */
-export const notFound = (res: Response, message: any) => {
+export const notFound = (res: Response, message: string) => {
   res.status(NOT_FOUND).json({
     status_code: NOT_FOUND,
     message,
@@ -87,9 +88,16 @@ export const notFound = (res: Response, message: any) => {
  * @param {any} res
  * @param {any} message
  */
-export const badRequest = (res: Response, message: any) => {
+export const badRequest = (res: Response, message: string) => {
   res.status(BAD_REQUEST).json({
     status_code: BAD_REQUEST,
+    message,
+  });
+};
+
+export const unauthorised = (res: Response, message: string) => {
+  res.status(UNAUTHORIZED).json({
+    status_code: UNAUTHORIZED,
     message,
   });
 };

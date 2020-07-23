@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CONFLICT } from 'http-status-codes';
+import { CONFLICT, UNAUTHORIZED } from 'http-status-codes';
 import { UserRepository } from '../repositories/UserRepository';
-import { created, conflict } from '../helpers/response';
+import { created, conflict, unauthorised, ok } from '../helpers/response';
 
 export class UsersController {
   /**
@@ -44,5 +44,29 @@ export class UsersController {
     }
 
     return created(res, user);
+  };
+
+  /**
+   * Signs a use into the application
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Function} next
+   *
+   * @memberOf UsersController
+   */
+  public signin = async (
+    req: Request,
+    res: Response,
+    next: (error: any) => {}
+  ) => {
+    const [user, error] = await this.userRepo.signin(req.body);
+    if (error) {
+      return error.status && error.status == UNAUTHORIZED
+        ? unauthorised(res, error.message)
+        : next(error);
+    }
+
+    return ok(res, user);
   };
 }
