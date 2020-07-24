@@ -60,15 +60,14 @@ jobs:
   #   steps:
   #     - checkout
   #     - run: npm run coveralls
-
-workflows:
-  'Run tests':
-    jobs:
-      - prepare
-      # - tests:
-      #     requires:
-      #       - prepare
-      # - report:
-      #     requires:
-      #       - prepare
-      #       - tests
+# workflows:
+#   'Run tests':
+#     jobs:
+#       - prepare
+# - tests:
+#     requires:
+#       - prepare
+# - report:
+#     requires:
+#       - prepare
+#       - tests
