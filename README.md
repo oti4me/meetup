@@ -1,4 +1,4 @@
-[![meetup](https://circleci.com/gh/oti4me/meetup.svg?style=svg)](https://app.circleci.com/pipelines/github/oti4me/meetup)
+[![meetup](https://circleci.com/gh/oti4me/meetup.svg?style=shield)](https://app.circleci.com/pipelines/github/oti4me/meetup)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1c3d83b43f7896d14847/maintainability)](https://codeclimate.com/github/oti4me/meetup/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1c3d83b43f7896d14847/test_coverage)](https://codeclimate.com/github/oti4me/meetup/test_coverage)
 
