@@ -46,7 +46,7 @@ jobs:
       #       ./cc-test-reporter after-build -t lcov --exit-code $?
       - run: ./cc-test-reporter before-build
 
-      - run: nyc --reporter=lcov npm test
+      - run: npm test
 
       - run: ./cc-test-reporter format-coverage -t lcov --prefix tmp/
 
