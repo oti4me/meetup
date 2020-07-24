@@ -48,6 +48,8 @@ jobs:
 
       - run: nyc --reporter=lcov npm test
 
+      - run: ./cc-test-reporter format-coverage -t lcov --prefix tmp/
+
       - run: ./cc-test-reporter after-build -t lcov --exit-code $?
 
       - run: npm run coveralls
