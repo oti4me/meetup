@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CONFLICT, UNAUTHORIZED } from 'http-status-codes';
 import { UserRepository } from '../repositories/UserRepository';
 import { created, conflict, unauthorised, ok } from '../helpers/response';
+import { encode } from '../helpers/jwt';
 
 export class UsersController {
   /**
@@ -43,7 +44,9 @@ export class UsersController {
         : next(error);
     }
 
-    return created(res, user);
+    const token = await encode(user);
+
+    return created(res, { token });
   };
 
   /**
@@ -67,6 +70,8 @@ export class UsersController {
         : next(error);
     }
 
-    return ok(res, user);
+    const token = await encode(user);
+
+    return ok(res, { token });
   };
 }

@@ -6,9 +6,8 @@ import bcrypt from 'bcryptjs';
  * @param {string} password
  * @returns
  */
-export const hashPassord = async (password: string) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return hashedPassword;
+export const hashPassword = (password: string) => {
+  return bcrypt.hashSync(password, 10);
 };
 
 /**
@@ -18,11 +17,9 @@ export const hashPassord = async (password: string) => {
  * @param {string} plainPassword
  * @returns
  */
-export const comparePassord = async (
+export const comparePassword = async (
   hashedPassword: string,
   plainPassword: string
 ) => {
-  const result = bcrypt.compareSync(plainPassword, hashedPassword);
-  console.log(result);
-  return result;
+  return bcrypt.compareSync(plainPassword, hashedPassword);
 };

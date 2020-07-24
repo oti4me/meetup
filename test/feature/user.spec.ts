@@ -3,6 +3,7 @@ import supertest from 'supertest';
 import App from '../../src/app';
 import { User } from '../../src/models/User';
 import { validUser, invalidEmail } from '../data';
+import { decode } from '../../src/helpers/jwt';
 
 const expect = chai.expect;
 
@@ -27,10 +28,11 @@ describe('Users Controller', () => {
         .post('/api/v1/users/signup')
         .send(validUser)
         .expect(201)
-        .end((err, res) => {
+        .end(async (err, res) => {
           const { body } = res.body;
           if (err) return done(err);
-          expect(body.email).to.equal(validUser.email);
+          const user = await decode(body.token);
+          expect(user.email).to.equal(validUser.email);
           done();
         });
     });
@@ -70,10 +72,11 @@ describe('Users Controller', () => {
         .post('/api/v1/users/signin')
         .send(validUser)
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
           const { body } = res.body;
+          const user = await decode(body.token);
           if (err) return done(err);
-          expect(body.email).to.equal(validUser.email);
+          expect(user.email).to.equal(validUser.email);
           done();
         });
     });

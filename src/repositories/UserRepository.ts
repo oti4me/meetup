@@ -1,5 +1,6 @@
 import { User } from '../models/User';
-import { comparePassord } from '../helpers/bcrypt';
+import { comparePassword } from '../helpers/bcrypt';
+import { removeKeys } from '../helpers/helpers';
 
 export class UserRepository {
   /**
@@ -23,7 +24,10 @@ export class UserRepository {
         ];
       }
 
-      const user = await User.create(userDetails);
+      let user = await User.create(userDetails);
+      user = JSON.parse(JSON.stringify(user));
+      removeKeys(user, ['password', 'createdAt', 'updatedAt']);
+
       return [user, null];
     } catch (error) {
       return [null, error];
@@ -42,9 +46,12 @@ export class UserRepository {
     try {
       const user = await User.findOne({
         where: { email: userDetails.email },
+        raw: true,
+        nest: true,
       });
 
-      if (user && comparePassord(user.password, userDetails.password)) {
+      if (user && comparePassword(user.password, userDetails.password)) {
+        removeKeys(user, ['password', 'createdAt', 'updatedAt']);
         return [user, null];
       }
 
