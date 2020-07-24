@@ -39,14 +39,18 @@ jobs:
 
       - run: ./node_modules/.bin/sequelize db:migrate
 
-      - run:
-          name: Runtest with Code Climate test-reporter
-          command: |
-            ./cc-test-reporter before-build npm test
-            ./cc-test-reporter format-coverage -t lcov --prefix ${CODEBUILD_SRC_DIR}
-            ./cc-test-reporter after-build -t lcov --exit-code $?
+      # - run:
+      #     name: Runtest with Code Climate test-reporter
+      #     command: |
+      #       ./cc-test-reporter before-build npm test
+      #       ./cc-test-reporter after-build -t lcov --exit-code $?
+      - run: ./cc-test-reporter before-build
+
+      - run: ./cc-test-reporter after-build -t lcov --exit-code $?
 
       - run: npm run coveralls
+
+      - run: nyc --reporter=lcov npm test
 
 workflows:
   'Run tests':

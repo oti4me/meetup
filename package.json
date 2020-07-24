@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --require ts-node/register ./test/**/*",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=lcov --reporter=text mocha --require ts-node/register ./test/**/*",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "node",
     "dev": "nodemon ./src/server.ts",
