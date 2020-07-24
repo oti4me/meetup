@@ -21,7 +21,7 @@ executors:
           POSTGRES_PASSWORD: ''
 
 jobs:
-  prepare:
+  test:
     executor: meetup
     steps:
       - checkout
@@ -39,36 +39,17 @@ jobs:
 
       - run: ./node_modules/.bin/sequelize db:migrate
 
-      - run: npm test
-        # name: Runtest with Code Climate test-reporter
-        # command: |
-        # ./cc-test-reporter before-build
-        # npm test --coverage-clover clover.xml
-        # ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+      - run:
+        name: Runtest with Code Climate test-reporter
+        command: |
+        ./cc-test-reporter before-build
+        npm test
+        ./cc-test-reporter after-build format-coverage -t lcov coverage/lcov.info
+        ./cc-test-reporter upload-coverage
+
       - run: npm run coveralls
-  # tests:
-  #   executor: meetup
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Runtest with Code Climate test-reporter
-  #         command: |
-  #           ./cc-test-reporter before-build
-  #           npm test --coverage-clover clover.xml
-  #           ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-  # report:
-  #   executor: meetup
-  #   steps:
-  #     - checkout
-  #     - run: npm run coveralls
+
 workflows:
   'Run tests':
     jobs:
-      - prepare
-# - tests:
-#     requires:
-#       - prepare
-# - report:
-#     requires:
-#       - prepare
-#       - tests
+      - test
