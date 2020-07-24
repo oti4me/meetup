@@ -43,9 +43,8 @@ jobs:
           name: Runtest with Code Climate test-reporter
           command: |
             ./cc-test-reporter before-build npm test
-            ./cc-test-reporter -t lcov 
-            ./cc-test-reporter -o ./coverage/codeclimate.json
-            ./cc-test-reporter upload-coverage -i ./coverage/codeclimate.json
+            ./cc-test-reporter format-coverage --output ./coverage/codeclimate.json
+            ./cc-test-reporter after-build --exit-code $?
 
       - run: npm run coveralls
 
