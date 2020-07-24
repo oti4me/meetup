@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
 import { dbInstance } from '../database/db';
 import { WELCOME_NOTIFICATION } from '../events/constants';
-import { hashPassord } from '../helpers/bcrypt';
+import { hashPassword } from '../helpers/bcrypt';
 
 export class User extends Model {
   public id?: number;
@@ -52,7 +52,7 @@ User.init(
   }
 );
 User.beforeCreate(async (user, options) => {
-  user.password = await hashPassord(user.password);
+  user.password = await hashPassword(user.password);
 });
 User.afterCreate(async (user, options) => {
   const eventEmitter = global['eventEmitter'];

@@ -61,7 +61,7 @@
 ## Technologies
 
 - [ECMAScript 7](http://es7-features.org/): This is the newest version of JavsScript with new features such as arrow functions, spread and rest operators and many more.
-- [Tyscript:](https://www.typescriptlang.org/) A superset of javascript with runtime type checking capability
+- [TypeScript:](https://www.typescriptlang.org/) A superset of JavaScript with runtime type checking capability
 
 # Coding Style
 
@@ -69,7 +69,7 @@
 
 # Language
 
-- Tyscript
+- TypeScript
 
 ## Api Documentation
 
