@@ -37,10 +37,6 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
-  tests:
-    executor: meetup
-    steps:
-      - checkout
       - run:
           name: Runtest with Code Climate test-reporter
           command: |
@@ -48,20 +44,31 @@ jobs:
             npm test --coverage-clover clover.xml
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
 
-  report:
-    executor: meetup
-    steps:
-      - checkout
       - run: npm run coveralls
+  # tests:
+  #   executor: meetup
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Runtest with Code Climate test-reporter
+  #         command: |
+  #           ./cc-test-reporter before-build
+  #           npm test --coverage-clover clover.xml
+  #           ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+  # report:
+  #   executor: meetup
+  #   steps:
+  #     - checkout
+  #     - run: npm run coveralls
 
 workflows:
   'Run tests':
     jobs:
       - prepare
-      - tests:
-          requires:
-            - prepare
-      - report:
-          requires:
-            - prepare
-            - tests
+      # - tests:
+      #     requires:
+      #       - prepare
+      # - report:
+      #     requires:
+      #       - prepare
+      #       - tests
