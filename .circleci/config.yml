@@ -37,6 +37,8 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
+      - run: ./node_modules/.bin/sequelize db:migrate
+
       - run:
           name: Runtest with Code Climate test-reporter
           command: |

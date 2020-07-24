@@ -8,7 +8,9 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "node",
     "dev": "nodemon ./src/server.ts",
-    "migrate:test": "./node_modules/.bin/sequelize db:migrate:undo:all && ./node_modules/.bin/sequelize db:migrate"
+    "migrate": "./node_modules/.bin/sequelize db:migrate",
+    "undomigrate": "./node_modules/.bin/sequelize db:migrate:undo:all",
+    "migrate:test": "npm run undomigrate && npm run migrate && npm run test"
   },
   "keywords": [],
   "author": "",
