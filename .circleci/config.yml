@@ -52,7 +52,7 @@ jobs:
     executor: meetup
     steps:
       - checkout
-      - run: sudo npm run coveralls
+      - run: npm run coveralls
 
 workflows:
   'Run tests':
