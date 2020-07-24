@@ -1,53 +1,55 @@
 version: 2.1
 
-# docker:
-#   - image: circleci/node:12.14.1
-#     environment:
-#       NODE_ENV: test
-#       TEST_DB_HOST: 127.0.0.1
-#       TEST_DB_NAME: circle_test
-#       TEST_DB_USERNAME: ubuntu
-#       TEST_DB_PASSWORD: ''
-#   - image: circleci/postgres:9.6
-#     environment:
-#       POSTGRES_USER: ubuntu
-#       POSTGRES_DB: circle_test
-#       POSTGRES_PASSWORD: ''
-
-jobs:
-  build:
+executors:
+  meetup:
     docker:
-      - image: circleci/node:12.14.1
+      # Main image to be used within this configuration
+      - image: circleci/ruby:2.6.3-node-browsers
+        environment: # environment variables for database
+          NODE_ENV: test
+          TEST_DB_USERNAME: postgres
+          TEST_DB_PASSWORD: ''
+          TEST_DB_NAME: test
+          TEST_DB_HOST: localhost
 
-      - image: circleci/postgres:9.6
+      # Environment variables for database need to match DATABASE_URL
+      - image: circleci/postgres:10-alpine-ram
         environment:
-          POSTGRES_USER: ubuntu
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: test
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ''
 
-    working_directory: ~/repo
-    steps:
-      - checkout
+jobs:
+  prepare:
+    executor: meetup
+      steps:
+        - checkout
+        - run: sudo npm install
+        - save_cache:
+          key: disposables-cache-1-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
 
-      - run: sudo npm install
+        - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
 
-      - save_cache:
-        key: disposables-cache-1-{{ checksum "package-lock.json" }}
-        paths:
-          - ./node_modules
+  tests:
+    executor: meetup
+      steps:
+        - checkout
+        - run:
+          command: |
+            ./cc-test-reporter before-build
+            npm test --coverage-clover clover.xml
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
 
-      - run: ./node_modules/.bin/sequelize db:migrate
-
-      - run:
-        name: Setup Code Climate test-reporter
-        command: |
-          # download test reporter as a static binary
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-
-      - run:
-        name: Run tests
-        command: |
-          ./cc-test-reporter before-build
-          npm test --coverage-clover clover.xml
-          ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+workflows:
+  "Run tests":
+    jobs:
+      - prepare
+      - tests:
+          requires:
+            - prepare
