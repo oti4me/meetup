@@ -60,10 +60,10 @@ jobs:
   #   steps:
   #     - checkout
   #     - run: npm run coveralls
-# workflows:
-#   'Run tests':
-#     jobs:
-#       - prepare
+workflows:
+  'Run tests':
+    jobs:
+      - prepare
 # - tests:
 #     requires:
 #       - prepare
