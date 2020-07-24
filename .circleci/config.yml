@@ -12,6 +12,7 @@ executors:
           TEST_DB_NAME: test
           TEST_DB_HOST: localhost
           CC_TEST_REPORTER_ID: '70bc935693ed7d6de36c68b2007c1afbe5ea81cf28178c4dfded88805a2d9736'
+          JWT_PRIVATE_KEY: henry
 
       # Environment variables for database need to match DATABASE_URL
       - image: circleci/postgres:10-alpine-ram
