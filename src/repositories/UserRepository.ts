@@ -1,4 +1,4 @@
-import { User } from '../models/User';
+import { User } from '../models/index';
 import { comparePassword } from '../helpers/bcrypt';
 import { removeKeys } from '../helpers/helpers';
 
