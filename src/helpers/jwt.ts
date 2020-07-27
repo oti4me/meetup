@@ -13,9 +13,9 @@ export const encode = async (userDetails: { [key: string]: any }) => {
     const sign = util.promisify(jwt.sign);
     const token = await sign(userDetails, key);
 
-    return token;
+    return [token, null];
   } catch (error) {
-    console.log(error);
+    return [null, error];
   }
 };
 
@@ -31,8 +31,8 @@ export const decode = async (token: string) => {
     const verify = util.promisify(jwt.verify);
     const user = await verify(token, key);
 
-    return user;
+    return [user, null];
   } catch (error) {
-    console.log(error);
+    return [null, error];
   }
 };

@@ -27,7 +27,7 @@ export const errorHandler = (
   res: Response,
   next: any
 ) => {
-  const statusCode = res.statusCode || 500;
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode || 500;
   res.status(statusCode);
   res.json({
     message: err.message,

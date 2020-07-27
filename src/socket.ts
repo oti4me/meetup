@@ -1,5 +1,5 @@
-import io, { Server as IOServer } from "socket.io";
-import { Server } from "http";
+import io, { Server as IOServer } from 'socket.io';
+import { Server } from 'http';
 
 export class Socket {
   /**
@@ -13,6 +13,7 @@ export class Socket {
 
   /**
    * Creates an instance of Socket.
+   *
    * @param {Server} server
    *
    * @memberOf Socket
@@ -25,9 +26,9 @@ export class Socket {
    * Starts the socket io connection
    */
   public start() {
-    this.socketIO.on("connection", (socket: any) => {
-      console.log("a user connected");
-      socket.on("message", (data: any) => console.log(data));
+    this.socketIO.on('connection', (socket: any) => {
+      console.log('a user connected');
+      socket.on('message', (data: any) => console.log(data));
     });
   }
 }
