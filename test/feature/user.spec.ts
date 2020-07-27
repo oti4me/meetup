@@ -31,7 +31,8 @@ describe('Users Controller', () => {
         .end(async (err, res) => {
           const { body } = res.body;
           if (err) return done(err);
-          const user = await decode(body.token);
+          const [user, error] = await decode(body.token);
+          if (error) return done(error);
           expect(user.email).to.equal(validUser.email);
           done();
         });
@@ -73,9 +74,10 @@ describe('Users Controller', () => {
         .send(validUser)
         .expect(200)
         .end(async (err, res) => {
-          const { body } = res.body;
-          const user = await decode(body.token);
           if (err) return done(err);
+          const { body } = res.body;
+          const [user, error] = await decode(body.token);
+          if (error) return done(error);
           expect(user.email).to.equal(validUser.email);
           done();
         });

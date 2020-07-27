@@ -44,7 +44,8 @@ export class UsersController {
         : next(error);
     }
 
-    const token = await encode(user);
+    const [token, err] = await encode(user);
+    if (err) return next(error);
 
     return created(res, { token });
   };
@@ -70,7 +71,8 @@ export class UsersController {
         : next(error);
     }
 
-    const token = await encode(user);
+    const [token, err] = await encode(user);
+    if (err) return next(error);
 
     return ok(res, { token });
   };

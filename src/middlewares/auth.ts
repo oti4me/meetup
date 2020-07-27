@@ -9,30 +9,32 @@ import { User } from '../models/index';
  * @param {Request} req
  * @param {Response} res
  * @param {() => {}} next
+ *
  * @returns
  */
-export const auth = async (req: Request, res: Response, next: () => {}) => {
+export const auth = async (req: Request, res: Response, next) => {
   const token = req.headers.authorization;
 
   if (!token) return unauthorised(res, 'Unauthorized Access');
 
-  const user = await decode(token);
+  const [decoded, error] = await decode(token);
+  if (error) return next(error);
+  // const user = await verifyUser(decoded.id);
+  if (decoded) {
+    req['user'] = decoded;
+    return next();
+  }
 
-  verifyUser(user.id);
-
-  req['user'] = user;
-  next();
+  return unauthorised(res, 'Unauthorized Access');
 };
 
 /**
  * Verify user for provided token
  *
  * @param {number} userId
- * @returns
+ *
+ * @returns {User}
  */
-export const verifyUser = (userId: number) => {
-  const user = User.findByPk(userId);
-
-  if (user) return true;
-  return false;
+export const verifyUser = async (userId: number) => {
+  return await User.findByPk(userId);
 };

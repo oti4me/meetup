@@ -1,6 +1,7 @@
 import faker from 'faker';
 
 export const validUser = {
+  id: 2,
   username: 'james',
   firstName: 'James',
   lastName: 'Gosling',
