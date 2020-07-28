@@ -39,9 +39,8 @@ export class UsersController {
   ) => {
     const [user, error] = await this.userRepo.signup(req.body);
     if (error) {
-      return error.status && error.status == CONFLICT
-        ? conflict(res, error.message)
-        : next(error);
+      if (error.status == CONFLICT) return conflict(res, error.message);
+      return next(error);
     }
 
     const [token, err] = await encode(user);
@@ -66,9 +65,8 @@ export class UsersController {
   ) => {
     const [user, error] = await this.userRepo.signin(req.body);
     if (error) {
-      return error.status && error.status == UNAUTHORIZED
-        ? unauthorised(res, error.message)
-        : next(error);
+      if (error.status == UNAUTHORIZED) return unauthorised(res, error.message);
+      return next(error);
     }
 
     const [token, err] = await encode(user);

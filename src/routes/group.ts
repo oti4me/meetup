@@ -5,13 +5,20 @@ import { auth } from '../middlewares/auth';
 
 const groupRoutes = Router();
 const groupController = new GroupController();
-const { createGroupValidationResult, createGroupValidator } = groupValidation;
+const { updateGroupValidationResult, createGroupValidator } = groupValidation;
 
 groupRoutes.post(
-  '/create',
+  '/',
   createGroupValidator,
-  createGroupValidationResult,
+  updateGroupValidationResult,
   groupController.create
+);
+
+groupRoutes.put(
+  '/:goupId',
+  createGroupValidator,
+  updateGroupValidationResult,
+  groupController.update
 );
 
 export default groupRoutes;
