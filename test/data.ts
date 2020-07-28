@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 export const validUser = {
-  id: 2,
+  id: 1,
   username: 'james',
   firstName: 'James',
   lastName: 'Gosling',
@@ -11,7 +11,7 @@ export const validUser = {
 };
 
 export const validUser1 = {
-  id: 3,
+  id: 2,
   username: 'adamsmith',
   firstName: 'Adams',
   lastName: 'Smith',
@@ -21,7 +21,7 @@ export const validUser1 = {
 };
 
 export const invalidEmail = {
-  id: 4,
+  id: 3,
   username: 'james',
   firstName: 'James',
   lastName: 'Gosling',

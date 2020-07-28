@@ -39,6 +39,7 @@ jobs:
             chmod +x ./cc-test-reporter
 
       - run: ./node_modules/.bin/sequelize db:migrate
+      - run: ./node_modules/.bin/sequelize db:seed:all
       - run: ./cc-test-reporter before-build
       - run: npm test
       - run: ./cc-test-reporter format-coverage -t lcov --prefix tmp/
