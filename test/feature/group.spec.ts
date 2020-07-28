@@ -17,19 +17,11 @@ before(async (done) => {
     const [tkn, err] = result;
     if (err) return done(err);
     token = tkn;
-    Group.destroy({
-      where: {},
-      truncate: true,
-    });
   });
   encode(validUser1).then((result) => {
     const [tkn, err] = result;
     if (err) return done(err);
     token1 = tkn;
-    Group.destroy({
-      where: {},
-      truncate: true,
-    });
   });
 
   done();
