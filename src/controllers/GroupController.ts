@@ -54,6 +54,6 @@ export class GroupController {
       return next(error);
     }
 
-    return ok(res, { message: 'Group updated', group });
+    return ok(res, group);
   };
 }

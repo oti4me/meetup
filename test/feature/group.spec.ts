@@ -77,11 +77,9 @@ describe('Group Controller', () => {
         .send({ ...group, name })
         .expect(200)
         .end((err, res) => {
-          const {
-            body: { group },
-          } = res.body;
+          const { body } = res.body;
           if (err) return done(err);
-          expect(group.name).to.equal(name);
+          expect(body.name).to.equal(name);
           done();
         });
     });
