@@ -4,7 +4,7 @@ import { unporecessed } from '../../helpers/response';
 
 export const groupValidation = {
   /**
-   * Checks for validation result, returns next of successful
+   * Checks creation validation result, returns next of successful
    *
    * @param {Request} req
    * @param {Response} res
@@ -27,10 +27,35 @@ export const groupValidation = {
     return next();
   },
 
+  /**
+   * Checks update validation result, returns next of successful
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {() => {}} next
+   * @returns
+   */
+  updateGroupValidationResult: (
+    req: Request,
+    res: Response,
+    next: () => {}
+  ) => {
+    const { name } = req.body;
+    const { id } = req['user'];
+    const { goupId } = req.params;
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) return unporecessed(res, result.array());
+
+    req.body = { name, user_id: id, id: goupId };
+
+    return next();
+  },
+
   createGroupValidator: [
     check('name')
       .optional(false)
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Name must be at 4-20 chars long'),
+      .isLength({ min: 4, max: 64 })
+      .withMessage('Name must be at 4-64 chars long'),
   ],
 };

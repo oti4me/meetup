@@ -32,8 +32,8 @@ export const userValidation = {
   signupValidator: [
     check('password')
       .optional(false)
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be at 4-20 chars long'),
+      .isLength({ min: 4, max: 64 })
+      .withMessage('Password must be at 4-64 chars long'),
     check('username')
       .optional(false)
       .isLength({ min: 2, max: 25 })
@@ -75,8 +75,8 @@ export const userValidation = {
   signinValidation: [
     check('password')
       .optional(false)
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be at 4-20 chars long'),
+      .isLength({ min: 4, max: 64 })
+      .withMessage('Password must be at 4-64 chars long'),
     check('email').optional(false).isEmail().withMessage('Invalid email'),
   ],
 };

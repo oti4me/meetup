@@ -82,7 +82,7 @@ describe('Users Controller', () => {
           done();
         });
     });
-    it('should return a 400 error if password field is empty', (done) => {
+    it('should return a 422 error if password field is empty', (done) => {
       const invalidaPassword = { ...validUser, password: 're' };
       request
         .post('/api/v1/users/signin')
@@ -90,7 +90,7 @@ describe('Users Controller', () => {
         .end((err, res) => {
           if (err) return done(err);
           expect(res.body.message[0].msg).to.equal(
-            'Password must be at 4-20 chars long'
+            'Password must be at 4-64 chars long'
           );
           expect(res.status).to.equal(422);
           done();
@@ -107,5 +107,18 @@ describe('Users Controller', () => {
           done();
         });
     });
+  });
+  it('should return a 401 error if user not valid', (done) => {
+    expect(true).to.equal(true);
+    request
+      .post('/api/v1/users/signin')
+      .send({ email: 'robinhood@ynail.com', password: 'not this time' })
+      .expect(401)
+      .end(async (err, res) => {
+        const { body } = res;
+        if (err) return done(err);
+        expect(body.message).to.equal('Username or password incorrect');
+        done();
+      });
   });
 });
