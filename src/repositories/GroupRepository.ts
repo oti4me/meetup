@@ -1,4 +1,5 @@
-import { NOT_FOUND, UNAUTHORIZED } from 'http-status-codes';
+import { Request } from 'express';
+import { NOT_FOUND, UNAUTHORIZED, OK } from 'http-status-codes';
 import { Group } from '../models/index';
 
 export class GroupRepository {
@@ -45,6 +46,42 @@ export class GroupRepository {
           {
             status: UNAUTHORIZED,
             message: 'Not authorised to update this group',
+          },
+        ];
+      }
+      return [null, { status: NOT_FOUND, message: 'Group not found' }];
+    } catch (error) {
+      return [null, error];
+    }
+  }
+
+  /**
+   * Deletes a user's group
+   *
+   * @param {Request} req
+   * @returns
+   *
+   * @memberOf GroupRepository
+   */
+  public async delete(req: Request) {
+    try {
+      const group = await Group.findByPk(req.params.goupId);
+      if (group) {
+        if (group.user_id === req['user'].id) {
+          group.destroy();
+          return [
+            {
+              status: OK,
+              message: 'Group deleted',
+            },
+            null,
+          ];
+        }
+        return [
+          null,
+          {
+            status: UNAUTHORIZED,
+            message: 'Not authorised to delete this group',
           },
         ];
       }

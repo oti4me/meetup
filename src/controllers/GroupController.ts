@@ -56,4 +56,27 @@ export class GroupController {
 
     return ok(res, group);
   };
+
+  /**
+   * Deletes a user group
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {(error: Error) => {}} next
+   * @returns
+   *
+   * @memberOf ChatController
+   */
+  public delete = async (req: Request, res: Response, next: (error) => {}) => {
+    const [result, error] = await this.groupRepo.delete(req);
+
+    if (error) {
+      if (error.status === NOT_FOUND) return notFound(res, error.message);
+      if (error.status === UNAUTHORIZED)
+        return unauthorised(res, error.message);
+      return next(error);
+    }
+
+    return ok(res, { message: result.message });
+  };
 }
