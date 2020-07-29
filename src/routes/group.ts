@@ -5,12 +5,16 @@ import { auth } from '../middlewares/auth';
 
 const groupRoutes = Router();
 const groupController = new GroupController();
-const { updateGroupValidationResult, createGroupValidator } = groupValidation;
+const {
+  updateGroupValidationResult,
+  createGroupValidator,
+  createGroupValidationResult,
+} = groupValidation;
 
 groupRoutes.post(
   '/',
   createGroupValidator,
-  updateGroupValidationResult,
+  createGroupValidationResult,
   groupController.create
 );
 
@@ -20,5 +24,7 @@ groupRoutes.put(
   updateGroupValidationResult,
   groupController.update
 );
+
+groupRoutes.delete('/:goupId', groupController.delete);
 
 export default groupRoutes;

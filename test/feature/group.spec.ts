@@ -49,7 +49,7 @@ describe('Group Controller', () => {
       request
         .post('/api/v1/groups')
         .set({ authorization: token })
-        .send({ ...group, name: 'ty' })
+        .send({ ...group, name })
         .expect(422)
         .end((err, res) => {
           const { message } = res.body;
@@ -133,6 +133,45 @@ describe('Group Controller', () => {
           const { body } = res;
           if (err) return done(err);
           expect(body.message).to.equal('invalid token');
+          done();
+        });
+    });
+  });
+
+  describe('Delete Group PUT: /api/v1/groups/:goupId', () => {
+    it('should successfully delete a group', (done) => {
+      request
+        .delete('/api/v1/groups/1')
+        .set({ authorization: token })
+        .expect(200)
+        .end((err, res) => {
+          const { body } = res.body;
+          if (err) return done(err);
+          expect(body.message).to.equal('Group deleted');
+          done();
+        });
+    });
+    it('should return 401 if group does not belong to current user', (done) => {
+      request
+        .delete('/api/v1/groups/2')
+        .set({ authorization: token })
+        .expect(401)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('Not authorised to delete this group');
+          done();
+        });
+    });
+    it('should return 404 if group does not exist', (done) => {
+      request
+        .delete('/api/v1/groups/2987')
+        .set({ authorization: token })
+        .expect(404)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('Group not found');
           done();
         });
     });

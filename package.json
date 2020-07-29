@@ -9,8 +9,9 @@
     "start": "node",
     "dev": "nodemon ./src/server.ts",
     "migrate": "cross-env NODE_ENV=test ./node_modules/.bin/sequelize db:migrate",
+    "seed": "cross-env NODE_ENV=test ./node_modules/.bin/sequelize db:seed:all",
     "undomigrate": "cross-env NODE_ENV=test ./node_modules/.bin/sequelize db:migrate:undo:all",
-    "migrate:test": "cross-env NODE_ENV=test npm run undomigrate && npm run migrate && npm run test"
+    "migrate:test": "cross-env NODE_ENV=test npm run undomigrate && npm run migrate && npm run seed && npm run test"
   },
   "keywords": [],
   "author": "",
