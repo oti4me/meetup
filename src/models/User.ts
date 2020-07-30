@@ -14,6 +14,8 @@ export class User extends Model {
   public password: string;
   public readonly createdAt?: string;
   public readonly updatedAt?: string;
+
+  public getGroups: () => Group[];
 }
 User.init(
   {

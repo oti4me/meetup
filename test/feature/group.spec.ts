@@ -1,7 +1,7 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import App from '../../src/app';
-import { Group } from '../../src/models/index';
+// import { Group } from '../../src/models/index';
 import { validUser, validUser1, invalidToken } from '../data';
 import { encode } from '../../src/helpers/jwt';
 
@@ -28,6 +28,34 @@ before(async (done) => {
 });
 
 describe('Group Controller', () => {
+  describe('Token POST: /api/v1/groups', () => {
+    it('should return a 401 error if token is empty', (done) => {
+      request
+        .post('/api/v1/groups')
+        .set({ authorization: '' })
+        .send(group)
+        .expect(401)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('Unauthorized Access');
+          done();
+        });
+    });
+    it('should return a 401 error token is invalid', (done) => {
+      request
+        .put('/api/v1/groups/1')
+        .set({ authorization: invalidToken })
+        .send(group)
+        .expect(500)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('invalid token');
+          done();
+        });
+    });
+  });
   describe('Create Group POST: /api/v1/groups', () => {
     it('should successfully create a new group', (done) => {
       request
@@ -92,9 +120,6 @@ describe('Group Controller', () => {
           done();
         });
     });
-  });
-
-  describe('Update Group Validation PUT: /api/v1/groups/:goupId', () => {
     it('should return a 404 if a group with provided id does not exist', (done) => {
       const name = 'group 1';
       request
@@ -108,36 +133,97 @@ describe('Group Controller', () => {
           done();
         });
     });
-  });
-  describe('Token POST: /api/v1/groups', () => {
-    it('should return a 401 error if token is empty', (done) => {
+    it('should return a 401 if group does not belong to current user', (done) => {
+      const name = 'group 1';
       request
-        .post('/api/v1/groups')
-        .set({ authorization: '' })
-        .send(group)
+        .put('/api/v1/groups/2')
+        .set({ authorization: token })
+        .send({ ...group, name })
+        .expect(401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body.message).to.equal(
+            'Not authorised to update this group'
+          );
+          done();
+        });
+    });
+  });
+  describe('Add User to Group POST: api/v1/groups/groupId/add-user/:id', () => {
+    it('should successfully add a user to a group', (done) => {
+      request
+        .post('/api/v1/groups/1/add-user/2')
+        .set({ authorization: token })
+        .expect(201)
+        .end((err, res) => {
+          const { body } = res.body;
+          if (err) return done(err);
+          expect(body.message).to.equal('User added to group');
+          done();
+        });
+    });
+    it('should return 409 if user already a member if the group', (done) => {
+      request
+        .post('/api/v1/groups/1/add-user/2')
+        .set({ authorization: token })
+        .expect(409)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('User alread a member of this group');
+          done();
+        });
+    });
+    it('should return 401 if current user is not the owner of the group', (done) => {
+      request
+        .post('/api/v1/groups/2/add-user/1')
+        .set({ authorization: token })
         .expect(401)
         .end((err, res) => {
           const { body } = res;
           if (err) return done(err);
-          expect(body.message).to.equal('Unauthorized Access');
+          expect(body.message).to.equal('Not authorised');
           done();
         });
     });
-    it('should return a 401 error token is invalid', (done) => {
+    it('should return 404 if user already a member if the group', (done) => {
       request
-        .put('/api/v1/groups/1')
-        .set({ authorization: invalidToken })
-        .send(group)
-        .expect(500)
+        .post('/api/v1/groups/1/add-user/187')
+        .set({ authorization: token })
+        .expect(404)
         .end((err, res) => {
           const { body } = res;
           if (err) return done(err);
-          expect(body.message).to.equal('invalid token');
+          expect(body.message).to.equal('User not found');
+          done();
+        });
+    });
+    it('should return 409 if user tries to add self', (done) => {
+      request
+        .post('/api/v1/groups/1/add-user/1')
+        .set({ authorization: token })
+        .expect(409)
+        .end((err, res) => {
+          console.log(res.body);
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('Cannot add group admin to group');
+          done();
+        });
+    });
+    it('should return 404 if group not found', (done) => {
+      request
+        .post('/api/v1/groups/1564/add-user/2')
+        .set({ authorization: token })
+        .expect(404)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal('Group not found');
           done();
         });
     });
   });
-
   describe('Delete Group PUT: /api/v1/groups/:goupId', () => {
     it('should successfully delete a group', (done) => {
       request

@@ -10,10 +10,6 @@ const expect = chai.expect;
 const request = supertest(new App().getApp());
 
 before((done) => {
-  User.destroy({
-    where: {},
-    truncate: true,
-  });
   global['eventEmitter'] = {
     emit: (name, data) => {},
   };
