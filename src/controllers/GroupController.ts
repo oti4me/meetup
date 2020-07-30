@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { NOT_FOUND, UNAUTHORIZED } from 'http-status-codes';
+import { NOT_FOUND, UNAUTHORIZED, CONFLICT } from 'http-status-codes';
 import { GroupRepository } from '../repositories/GroupRepository';
-import { created, ok } from '../helpers/response';
+import { created, ok, conflict } from '../helpers/response';
 import { notFound, unauthorised } from '../helpers/response';
 
 export class GroupController {
@@ -78,5 +78,30 @@ export class GroupController {
     }
 
     return ok(res, { message: result.message });
+  };
+
+  /**
+   * Adds a user to a group
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {(error: Error) => {}} next
+   * @returns
+   *
+   * @memberOf ChatController
+   */
+  public addUser = async (req: Request, res: Response, next: (error) => {}) => {
+    const [userGroup, error] = await this.groupRepo.addUser(req);
+    if (error) {
+      if (error.status === NOT_FOUND) return notFound(res, error.message);
+      if (error.status === UNAUTHORIZED) {
+        return unauthorised(res, error.message);
+      }
+      if (error.status === CONFLICT) {
+        return conflict(res, error.message);
+      }
+      return next(error);
+    }
+    return created(res, await userGroup);
   };
 }

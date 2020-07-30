@@ -19,12 +19,13 @@ groupRoutes.post(
 );
 
 groupRoutes.put(
-  '/:goupId',
+  '/:groupId',
   createGroupValidator,
   updateGroupValidationResult,
   groupController.update
 );
 
-groupRoutes.delete('/:goupId', groupController.delete);
+groupRoutes.delete('/:groupId', groupController.delete);
+groupRoutes.post('/:groupId/add-user/:id', groupController.addUser);
 
 export default groupRoutes;

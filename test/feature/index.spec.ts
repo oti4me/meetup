@@ -19,3 +19,20 @@ describe('Test 404 handler', () => {
       });
   });
 });
+
+describe('Test / route', () => {
+  it('should return a 200 success', (done) => {
+    const doc = process.env.DOCURL;
+    request
+      .get('/')
+      .expect(200)
+      .end((err, res) => {
+        const { body } = res;
+        if (err) return done(err);
+        expect(body.message).to
+          .equal(`Welcome to the meetup API, please consult \
+        the API documentatuon for more info on ${doc}`);
+        done();
+      });
+  });
+});

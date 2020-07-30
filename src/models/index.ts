@@ -6,13 +6,7 @@ import { User } from './User';
  * User group relationship, to prevent circle dependency
  * ***************
  */
-User.hasMany(Group, {
-  sourceKey: 'id',
-  foreignKey: 'user_id',
-});
-Group.belongsTo(User, {
-  targetKey: 'id',
-  foreignKey: 'user_id',
-});
+User.belongsToMany(Group, { through: 'UserGroups' });
+Group.belongsToMany(User, { through: 'UserGroups' });
 
 export { Group, User };

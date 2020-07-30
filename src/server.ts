@@ -5,7 +5,7 @@ import { Socket } from './socket';
 import { dbInstance } from './database/db';
 import Event from './events/Event';
 
-const port: number = Number(process.env.PORT) || 3001;
+const port: number = parseInt(process.env.PORT, 10) || 3001;
 const event = new Event().listen();
 const app: App = new App();
 global['eventEmitter'] = event.getEventEmitter();

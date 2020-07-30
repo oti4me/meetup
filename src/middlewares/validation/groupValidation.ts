@@ -42,12 +42,12 @@ export const groupValidation = {
   ) => {
     const { name } = req.body;
     const { id } = req['user'];
-    const { goupId } = req.params;
+    const { groupId } = req.params;
     const result = validationResult(req);
 
     if (!result.isEmpty()) return unporecessed(res, result.array());
 
-    req.body = { name, user_id: id, id: goupId };
+    req.body = { name, user_id: id, id: groupId };
 
     return next();
   },

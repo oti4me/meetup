@@ -27,7 +27,16 @@ export const errorHandler = (
   res: Response,
   next: any
 ) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode || 500;
+  let statusCode: number;
+
+  if (err['statusCode']) {
+    statusCode = err['statusCode'];
+  } else if (res.statusCode && res.statusCode === 200) {
+    statusCode = 500;
+  } else {
+    statusCode = res.statusCode || 500;
+  }
+
   res.status(statusCode);
   res.json({
     message: err.message,
