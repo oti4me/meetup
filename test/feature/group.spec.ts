@@ -1,7 +1,7 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import App from '../../src/app';
-import { validUser, validUser1, invalidToken } from '../data';
+import { validUser, validUser1, invalidEmail, invalidToken } from '../data';
 import { encode } from '../../src/helpers/jwt';
 
 const expect = chai.expect;
@@ -17,7 +17,7 @@ before(async (done) => {
     if (err) return done(err);
     token = tkn;
   });
-  encode(validUser1).then((result) => {
+  encode(invalidEmail).then((result) => {
     const [tkn, err] = result;
     if (err) return done(err);
     token1 = tkn;
@@ -222,6 +222,36 @@ describe('Group Controller', () => {
         });
     });
   });
+
+  describe('Gets User from Group GET: /api/v1/groups', () => {
+    it("should successfully gets a user's group", (done) => {
+      request
+        .get('/api/v1/groups')
+        .set({ authorization: token })
+        .expect(200)
+        .end((err, res) => {
+          const { body } = res.body;
+          if (err) return done(err);
+          expect(body.length).to.gt(0);
+          done();
+        });
+    });
+    it('should return 404 if current user not no group nor added to one', (done) => {
+      request
+        .get('/api/v1/groups')
+        .set({ authorization: token1 })
+        .expect(404)
+        .end((err, res) => {
+          const { message } = res.body;
+          if (err) return done(err);
+          expect(message).to.equal(
+            'User has not created or added to to a group!!'
+          );
+          done();
+        });
+    });
+  });
+
   describe('Remove User from Group DELETE: /api/v1/groups/:goupId/user/:id', () => {
     it('should successfully remove a user from a group', (done) => {
       request

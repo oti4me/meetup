@@ -138,4 +138,33 @@ export class GroupRepository {
       return [null, error];
     }
   }
+
+  /**
+   * Perform database operation to get a user's group
+   *
+   * @param {Request} req
+   * @returns
+   *
+   * @memberOf GroupRepository
+   */
+  public async getMyGroups(req: Request) {
+    try {
+      const user = req['user'];
+      const groupsAdded = await user.getGroups();
+      const groupsCreated = await Group.findAll({
+        where: { user_id: user.id },
+      });
+
+      const groups = [...groupsAdded, ...groupsCreated];
+      if (groups.length === 0)
+        return [
+          null,
+          new NotFound('User has not created or added to to a group!!'),
+        ];
+
+      return [groups, null];
+    } catch (error) {
+      return [null, error];
+    }
+  }
 }

@@ -28,5 +28,6 @@ groupRoutes.put(
 groupRoutes.delete('/:groupId', groupController.delete);
 groupRoutes.post('/:groupId/user/:id', groupController.addUser);
 groupRoutes.delete('/:groupId/user/:id', groupController.removeUser);
+groupRoutes.get('/', groupController.getMyGroups);
 
 export default groupRoutes;
