@@ -4,7 +4,7 @@ const faker = require('faker');
 module.exports = {
   up: (queryInterface, Sequelize) => {
     const data = [];
-    const amountToSeed = 5;
+    const amountToSeed = 7;
     let count = 0;
 
     while (count < amountToSeed) {

@@ -102,4 +102,25 @@ export class GroupController {
 
     return ok(res, await userGroup);
   };
+
+  /**
+   * Gets a user's groups
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {(error: Error) => {}} next
+   * @returns
+   *
+   * @memberOf ChatController
+   */
+  public getMyGroups = async (
+    req: Request,
+    res: Response,
+    next: (error) => {}
+  ) => {
+    const [userGroup, error] = await this.groupRepo.getMyGroups(req);
+    if (error) return next(error);
+
+    return ok(res, await userGroup);
+  };
 }

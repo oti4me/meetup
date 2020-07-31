@@ -21,7 +21,7 @@ export const validUser1 = {
 };
 
 export const invalidEmail = {
-  id: 3,
+  id: 6,
   username: 'james',
   firstName: 'James',
   lastName: 'Gosling',

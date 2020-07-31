@@ -19,9 +19,10 @@ export const auth = async (req: Request, res: Response, next) => {
 
   const [decoded, error] = await decode(token);
   if (error) return next(error);
-  // const user = await verifyUser(decoded.id);
+  const user = await verifyUser(decoded.id);
+  if (!user) return next(new Unauthorized('Unauthorized Access'));
 
-  req['user'] = decoded;
+  req['user'] = user;
   return next();
 };
 
@@ -32,6 +33,6 @@ export const auth = async (req: Request, res: Response, next) => {
  *
  * @returns {User}
  */
-// export const verifyUser = async (userId: number) => {
-//   return await User.findByPk(userId);
-// };
+export const verifyUser = async (userId: number) => {
+  return await User.findByPk(userId);
+};
