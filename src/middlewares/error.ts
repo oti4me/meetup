@@ -36,10 +36,10 @@ export const errorHandler = (
   } else {
     statusCode = res.statusCode || 500;
   }
-
   res.status(statusCode);
   res.json({
     message: err.message,
+    body: statusCode === 422 ? err['fields'] : '',
     stack: process.env.NODE_ENV === 'production' ? '' : err.stack,
   });
 };

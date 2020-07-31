@@ -11,7 +11,7 @@ const app: App = new App();
 global['eventEmitter'] = event.getEventEmitter();
 
 dotenv.config();
-dbInstance.authenticate();
+// dbInstance.authenticate();
 
 const server: Server = http.createServer(app.getApp());
 

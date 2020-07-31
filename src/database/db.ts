@@ -41,15 +41,15 @@ class DB {
   /**
    * authenticate
    */
-  public async authenticate() {
-    try {
-      await this.sequelize.authenticate();
-      await this.sequelize.sync({ force: false });
-      console.log('Connection has been established successfully.');
-    } catch (error) {
-      console.error('Unable to connect to the database:', error);
-    }
-  }
+  // public async authenticate() {
+  //   try {
+  //     await this.sequelize.authenticate();
+  //     await this.sequelize.sync({ force: false });
+  //     console.log('Connection has been established successfully.');
+  //   } catch (error) {
+  //     console.error('Unable to connect to the database:', error);
+  //   }
+  // }
 }
 
 export const dbInstance = new DB();

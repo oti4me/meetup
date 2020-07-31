@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import { NOT_FOUND, UNAUTHORIZED, CONFLICT } from 'http-status-codes';
 import { GroupRepository } from '../repositories/GroupRepository';
-import { created, ok, conflict } from '../helpers/response';
-import { notFound, unauthorised } from '../helpers/response';
+import { created, ok } from '../helpers/response';
 
 export class GroupController {
   private groupRepo: GroupRepository;
@@ -28,7 +26,6 @@ export class GroupController {
    */
   public create = async (req: Request, res: Response, next: (error) => {}) => {
     const [group, error] = await this.groupRepo.create(req.body);
-
     if (error) return next(error);
 
     return created(res, group);
@@ -46,13 +43,7 @@ export class GroupController {
    */
   public update = async (req: Request, res: Response, next: (error) => {}) => {
     const [group, error] = await this.groupRepo.update(req.body);
-
-    if (error) {
-      if (error.status === NOT_FOUND) return notFound(res, error.message);
-      if (error.status === UNAUTHORIZED)
-        return unauthorised(res, error.message);
-      return next(error);
-    }
+    if (error) return next(error);
 
     return ok(res, group);
   };
@@ -69,13 +60,7 @@ export class GroupController {
    */
   public delete = async (req: Request, res: Response, next: (error) => {}) => {
     const [result, error] = await this.groupRepo.delete(req);
-
-    if (error) {
-      if (error.status === NOT_FOUND) return notFound(res, error.message);
-      if (error.status === UNAUTHORIZED)
-        return unauthorised(res, error.message);
-      return next(error);
-    }
+    if (error) return next(error);
 
     return ok(res, { message: result.message });
   };
@@ -92,16 +77,8 @@ export class GroupController {
    */
   public addUser = async (req: Request, res: Response, next: (error) => {}) => {
     const [userGroup, error] = await this.groupRepo.addUser(req);
-    if (error) {
-      if (error.status === NOT_FOUND) return notFound(res, error.message);
-      if (error.status === UNAUTHORIZED) {
-        return unauthorised(res, error.message);
-      }
-      if (error.status === CONFLICT) {
-        return conflict(res, error.message);
-      }
-      return next(error);
-    }
+    if (error) return next(error);
+
     return created(res, await userGroup);
   };
 }

@@ -1,7 +1,6 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import App from '../../src/app';
-// import { Group } from '../../src/models/index';
 import { validUser, validUser1, invalidToken } from '../data';
 import { encode } from '../../src/helpers/jwt';
 
@@ -80,14 +79,14 @@ describe('Group Controller', () => {
         .send({ ...group, name })
         .expect(422)
         .end((err, res) => {
-          const { message } = res.body;
+          const { message, body } = res.body;
           if (err) return done(err);
-          expect(message[0].msg).to.equal('Name must be at 4-64 chars long');
+          expect(message).to.equal('Request validation failed');
+          expect(body[0].msg).to.equal('Name must be at 4-64 chars long');
           done();
         });
     });
   });
-
   describe('Update Group PUT: /api/v1/groups/:goupId', () => {
     it('should successfully update a group', (done) => {
       const name = 'group new name';
@@ -114,9 +113,9 @@ describe('Group Controller', () => {
         .expect(422)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.message[0].msg).to.equal(
-            'Name must be at 4-64 chars long'
-          );
+          const { message, body } = res.body;
+          expect(message).to.equal('Request validation failed');
+          expect(body[0].msg).to.equal('Name must be at 4-64 chars long');
           done();
         });
     });
@@ -170,7 +169,7 @@ describe('Group Controller', () => {
         .end((err, res) => {
           const { body } = res;
           if (err) return done(err);
-          expect(body.message).to.equal('User alread a member of this group');
+          expect(body.message).to.equal('User alread in this group');
           done();
         });
     });
@@ -204,10 +203,9 @@ describe('Group Controller', () => {
         .set({ authorization: token })
         .expect(409)
         .end((err, res) => {
-          console.log(res.body);
           const { body } = res;
           if (err) return done(err);
-          expect(body.message).to.equal('Cannot add group admin to group');
+          expect(body.message).to.equal('User alread in this group');
           done();
         });
     });

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { CONFLICT, UNAUTHORIZED } from 'http-status-codes';
 import { UserRepository } from '../repositories/UserRepository';
-import { created, conflict, unauthorised, ok } from '../helpers/response';
+import { created, ok } from '../helpers/response';
 import { encode } from '../helpers/jwt';
 
 export class UsersController {
@@ -38,10 +37,7 @@ export class UsersController {
     next: (error: any) => {}
   ) => {
     const [user, error] = await this.userRepo.signup(req.body);
-    if (error) {
-      if (error.status == CONFLICT) return conflict(res, error.message);
-      return next(error);
-    }
+    if (error) return next(error);
 
     const [token, err] = await encode(user);
     if (err) return next(error);
@@ -64,10 +60,7 @@ export class UsersController {
     next: (error: any) => {}
   ) => {
     const [user, error] = await this.userRepo.signin(req.body);
-    if (error) {
-      if (error.status == UNAUTHORIZED) return unauthorised(res, error.message);
-      return next(error);
-    }
+    if (error) return next(error);
 
     const [token, err] = await encode(user);
     if (err) return next(error);

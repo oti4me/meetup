@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { check, validationResult } from 'express-validator';
-import { unporecessed } from '../../helpers/response';
+// import { unporecessed } from '../../helpers/response';
+import { Unprocessed } from '../../helpers/errors/Unprocessed';
+import { ValidationError } from '../../helpers/errors/ValidationError';
 
 export const groupValidation = {
   /**
@@ -11,16 +13,12 @@ export const groupValidation = {
    * @param {() => {}} next
    * @returns
    */
-  createGroupValidationResult: (
-    req: Request,
-    res: Response,
-    next: () => {}
-  ) => {
+  createGroupValidationResult: (req: Request, res: Response, next) => {
     const { name } = req.body;
     const { id } = req['user'];
     const result = validationResult(req);
 
-    if (!result.isEmpty()) return unporecessed(res, result.array());
+    if (!result.isEmpty()) return next(new ValidationError(result.array()));
 
     req.body = { name, user_id: id };
 
@@ -32,20 +30,16 @@ export const groupValidation = {
    *
    * @param {Request} req
    * @param {Response} res
-   * @param {() => {}} next
+   * @param {} next
    * @returns
    */
-  updateGroupValidationResult: (
-    req: Request,
-    res: Response,
-    next: () => {}
-  ) => {
+  updateGroupValidationResult: (req: Request, res: Response, next) => {
     const { name } = req.body;
     const { id } = req['user'];
     const { groupId } = req.params;
     const result = validationResult(req);
 
-    if (!result.isEmpty()) return unporecessed(res, result.array());
+    if (!result.isEmpty()) return next(new ValidationError(result.array()));
 
     req.body = { name, user_id: id, id: groupId };
 

@@ -1,7 +1,8 @@
 import { Request } from 'express';
-import { NOT_FOUND, UNAUTHORIZED, OK, CONFLICT } from 'http-status-codes';
 import { Group, User } from '../models/index';
-import { exists } from 'fs';
+import { Unauthorized } from '../helpers/errors/Unauthorized';
+import { NotFound } from '../helpers/errors/NotFound';
+import { Conflict } from '../helpers/errors/Conflict';
 
 export class GroupRepository {
   constructor() {}
@@ -42,15 +43,9 @@ export class GroupRepository {
           return [group, null];
         }
 
-        return [
-          null,
-          {
-            status: UNAUTHORIZED,
-            message: 'Not authorised to update this group',
-          },
-        ];
+        return [null, new Unauthorized('Not authorised to update this group')];
       }
-      return [null, { status: NOT_FOUND, message: 'Group not found' }];
+      return [null, new NotFound('Group not found')];
     } catch (error) {
       return [null, error];
     }
@@ -70,23 +65,11 @@ export class GroupRepository {
       if (group) {
         if (group.user_id === req['user'].id) {
           group.destroy();
-          return [
-            {
-              status: OK,
-              message: 'Group deleted',
-            },
-            null,
-          ];
+          return [{ message: 'Group deleted' }, null];
         }
-        return [
-          null,
-          {
-            status: UNAUTHORIZED,
-            message: 'Not authorised to delete this group',
-          },
-        ];
+        return [null, new Unauthorized('Not authorised to delete this group')];
       }
-      return [null, { status: NOT_FOUND, message: 'Group not found' }];
+      return [null, new NotFound('Group not found')];
     } catch (error) {
       return [null, error];
     }
@@ -107,50 +90,23 @@ export class GroupRepository {
 
       if (group) {
         if (group.user_id !== req['user'].id)
-          return [
-            null,
-            {
-              status: UNAUTHORIZED,
-              message: 'Not authorised',
-            },
-          ];
-
-        if (req['user'].id === parseInt(id))
-          return [
-            null,
-            {
-              status: CONFLICT,
-              message: 'Cannot add group admin to group',
-            },
-          ];
+          return [null, new Unauthorized('Not authorised')];
 
         const users = await group.getUsers();
         const exists = users.find((user) => user.id === parseInt(id));
 
-        if (exists)
-          return [
-            null,
-            {
-              status: CONFLICT,
-              message: 'User alread a member of this group',
-            },
-          ];
+        if (exists || req['user'].id === parseInt(id))
+          return [null, new Conflict('User alread in this group')];
 
-        const user = await User.findByPk(id);
+        let user: User = await User.findByPk(id);
 
         if (user) {
           group.addUsers(user);
           return [{ message: 'User added to group' }, null];
         }
-        return [
-          null,
-          {
-            status: NOT_FOUND,
-            message: 'User not found',
-          },
-        ];
+        return [null, new NotFound('User not found')];
       }
-      return [null, { status: NOT_FOUND, message: 'Group not found' }];
+      return [null, new NotFound('Group not found')];
     } catch (error) {
       return [null, error];
     }
