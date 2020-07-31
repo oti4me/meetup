@@ -1,6 +1,8 @@
 import { User } from '../models/index';
 import { comparePassword } from '../helpers/bcrypt';
 import { removeKeys } from '../helpers/helpers';
+import { Unauthorized } from '../helpers/errors/Unauthorized';
+import { Conflict } from '../helpers/errors/Conflict';
 
 export class UserRepository {
   /**
@@ -17,17 +19,11 @@ export class UserRepository {
         where: { email: userDetails.email },
       });
 
-      if (exists) {
-        return [
-          null,
-          { status: 409, message: 'A user with this email already exists' },
-        ];
-      }
+      if (exists)
+        return [null, new Conflict('A user with this email already exists')];
 
-      let user = await User.create(userDetails);
-      user = JSON.parse(JSON.stringify(user));
+      const user = (await User.create(userDetails)).toJSON();
       removeKeys(user, ['password', 'createdAt', 'updatedAt']);
-
       return [user, null];
     } catch (error) {
       return [null, error];
@@ -55,7 +51,7 @@ export class UserRepository {
         return [user, null];
       }
 
-      return [null, { status: 401, message: 'Username or password incorrect' }];
+      return [null, new Unauthorized('Username or password incorrect')];
     } catch (error) {
       return [null, error];
     }

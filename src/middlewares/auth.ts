@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { decode } from '../helpers/jwt';
-import { unauthorised } from '../helpers/response';
+import { Unauthorized } from '../helpers/errors/Unauthorized';
 import { User } from '../models/index';
 
 /**
@@ -15,7 +15,7 @@ import { User } from '../models/index';
 export const auth = async (req: Request, res: Response, next) => {
   const token = req.headers.authorization;
 
-  if (!token) return unauthorised(res, 'Unauthorized Access');
+  if (!token) return next(new Unauthorized('Unauthorized Access'));
 
   const [decoded, error] = await decode(token);
   if (error) return next(error);

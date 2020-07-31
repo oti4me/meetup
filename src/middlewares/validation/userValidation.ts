@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { check, validationResult } from 'express-validator';
-import { unporecessed } from '../../helpers/response';
+import { Unprocessed } from '../../helpers/errors/Unprocessed';
+import { ValidationError } from '../../helpers/errors/ValidationError';
 
 export const userValidation = {
   /**
@@ -11,11 +12,11 @@ export const userValidation = {
    * @param {() => {}} next
    * @returns
    */
-  signupValidationResult: (req: Request, res: Response, next: () => {}) => {
+  signupValidationResult: (req: Request, res: Response, next) => {
     const { firstName, lastName, email, username, phone, password } = req.body;
     const result = validationResult(req);
 
-    if (!result.isEmpty()) return unporecessed(res, result.array());
+    if (!result.isEmpty()) return next(new ValidationError(result.array()));
 
     req.body = {
       firstName,
@@ -41,11 +42,11 @@ export const userValidation = {
     check('firstName')
       .optional(false)
       .isLength({ min: 3, max: 25 })
-      .withMessage('Usernane must be at 3-25 chars long'),
+      .withMessage('firstNane must be at 3-25 chars long'),
     check('lastName')
       .optional(false)
       .isLength({ min: 3, max: 25 })
-      .withMessage('Usernane must be at least 3-25 chars long'),
+      .withMessage('lastNane must be at least 3-25 chars long'),
     check('email').isEmail().withMessage('Invalid email provided'),
     check('phone')
       .optional(true)
@@ -61,11 +62,13 @@ export const userValidation = {
    * @param {() => {}} next
    * @returns
    */
-  signinValidationResult: (req: Request, res: Response, next: () => {}) => {
+  signinValidationResult: (req: Request, res: Response, next) => {
     const { email, password } = req.body;
     const result = validationResult(req);
 
-    if (!result.isEmpty()) return unporecessed(res, result.array());
+    if (!result.isEmpty()) {
+      return next(new ValidationError(result.array()));
+    }
 
     req.body = { email, password };
 

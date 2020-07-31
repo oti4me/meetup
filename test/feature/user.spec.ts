@@ -1,7 +1,6 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import App from '../../src/app';
-import { User } from '../../src/models/User';
 import { validUser, invalidEmail } from '../data';
 import { decode } from '../../src/helpers/jwt';
 
@@ -55,9 +54,10 @@ describe('Users Controller', () => {
         .send(invalidEmail)
         .expect(422)
         .end((err, res) => {
-          const { body } = res;
+          const { body, message } = res.body;
           if (err) return done(err);
-          expect(body.message[0].msg).to.equal('Invalid email provided');
+          expect(message).to.equal('Request validation failed');
+          expect(body[0].msg).to.equal('Invalid email provided');
           done();
         });
     });
@@ -83,12 +83,12 @@ describe('Users Controller', () => {
       request
         .post('/api/v1/users/signin')
         .send(invalidaPassword)
+        .expect(422)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.message[0].msg).to.equal(
-            'Password must be at 4-64 chars long'
-          );
-          expect(res.status).to.equal(422);
+          const { message, body } = res.body;
+          expect(message).to.equal('Request validation failed');
+          expect(body[0].msg).to.equal('Password must be at 4-64 chars long');
           done();
         });
     });
@@ -96,10 +96,12 @@ describe('Users Controller', () => {
       request
         .post('/api/v1/users/signin')
         .send(invalidEmail)
+        .expect(422)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.message[0].msg).to.equal('Invalid email');
-          expect(res.status).to.equal(422);
+          const { message, body } = res.body;
+          expect(message).to.equal('Request validation failed');
+          expect(body[0].msg).to.equal('Invalid email');
           done();
         });
     });
