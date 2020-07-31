@@ -33,7 +33,7 @@ export class GroupController {
 
   /**
    * Updates a user group
-   *
+   *+
    * @param {Request} req
    * @param {Response} res
    * @param {(error: Error) => {}} next
@@ -80,5 +80,26 @@ export class GroupController {
     if (error) return next(error);
 
     return created(res, await userGroup);
+  };
+
+  /**
+   * Removes a user from a group
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param {(error: Error) => {}} next
+   * @returns
+   *
+   * @memberOf ChatController
+   */
+  public removeUser = async (
+    req: Request,
+    res: Response,
+    next: (error) => {}
+  ) => {
+    const [userGroup, error] = await this.groupRepo.removeUser(req);
+    if (error) return next(error);
+
+    return ok(res, await userGroup);
   };
 }

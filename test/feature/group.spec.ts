@@ -151,7 +151,7 @@ describe('Group Controller', () => {
   describe('Add User to Group POST: api/v1/groups/groupId/add-user/:id', () => {
     it('should successfully add a user to a group', (done) => {
       request
-        .post('/api/v1/groups/1/add-user/2')
+        .post('/api/v1/groups/1/user/2')
         .set({ authorization: token })
         .expect(201)
         .end((err, res) => {
@@ -163,7 +163,7 @@ describe('Group Controller', () => {
     });
     it('should return 409 if user already a member if the group', (done) => {
       request
-        .post('/api/v1/groups/1/add-user/2')
+        .post('/api/v1/groups/1/user/2')
         .set({ authorization: token })
         .expect(409)
         .end((err, res) => {
@@ -175,7 +175,7 @@ describe('Group Controller', () => {
     });
     it('should return 401 if current user is not the owner of the group', (done) => {
       request
-        .post('/api/v1/groups/2/add-user/1')
+        .post('/api/v1/groups/2/user/1')
         .set({ authorization: token })
         .expect(401)
         .end((err, res) => {
@@ -187,7 +187,7 @@ describe('Group Controller', () => {
     });
     it('should return 404 if user already a member if the group', (done) => {
       request
-        .post('/api/v1/groups/1/add-user/187')
+        .post('/api/v1/groups/1/user/187')
         .set({ authorization: token })
         .expect(404)
         .end((err, res) => {
@@ -199,7 +199,7 @@ describe('Group Controller', () => {
     });
     it('should return 409 if user tries to add self', (done) => {
       request
-        .post('/api/v1/groups/1/add-user/1')
+        .post('/api/v1/groups/1/user/1')
         .set({ authorization: token })
         .expect(409)
         .end((err, res) => {
@@ -211,13 +211,63 @@ describe('Group Controller', () => {
     });
     it('should return 404 if group not found', (done) => {
       request
-        .post('/api/v1/groups/1564/add-user/2')
+        .post('/api/v1/groups/1564/user/2')
         .set({ authorization: token })
         .expect(404)
         .end((err, res) => {
           const { body } = res;
           if (err) return done(err);
           expect(body.message).to.equal('Group not found');
+          done();
+        });
+    });
+  });
+  describe('Remove User from Group DELETE: /api/v1/groups/:goupId/user/:id', () => {
+    it('should successfully remove a user from a group', (done) => {
+      request
+        .delete('/api/v1/groups/1/user/2')
+        .set({ authorization: token })
+        .expect(200)
+        .end((err, res) => {
+          const { body } = res.body;
+          if (err) return done(err);
+          expect(body.message).to.equal('User removed from group');
+          done();
+        });
+    });
+    it('should return 401 if current user is not the owner of the group', (done) => {
+      request
+        .delete('/api/v1/groups/2/user/2')
+        .set({ authorization: token })
+        .expect(401)
+        .end((err, res) => {
+          const { message } = res.body;
+          if (err) return done(err);
+          expect(message).to.equal('Not authorised');
+          done();
+        });
+    });
+    it('should return 404 if user is a member of the group', (done) => {
+      request
+        .delete('/api/v1/groups/1/user/254')
+        .set({ authorization: token })
+        .expect(404)
+        .end((err, res) => {
+          const { message } = res.body;
+          if (err) return done(err);
+          expect(message).to.equal('User not a member of this this group');
+          done();
+        });
+    });
+    it('should return 401 if group does not exist', (done) => {
+      request
+        .delete('/api/v1/groups/154/user/2')
+        .set({ authorization: token })
+        .expect(404)
+        .end((err, res) => {
+          const { message } = res.body;
+          if (err) return done(err);
+          expect(message).to.equal('Group not found');
           done();
         });
     });

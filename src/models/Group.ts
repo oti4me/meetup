@@ -11,6 +11,7 @@ export class Group extends Model {
 
   public addUsers: (user: User) => {};
   public getUsers: () => User[];
+  public removeUser: (user: User) => {};
 }
 Group.init(
   {
