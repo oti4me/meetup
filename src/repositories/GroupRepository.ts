@@ -1,8 +1,11 @@
 import { Request } from 'express';
+import { Op } from 'sequelize';
 import { Group, User } from '../models/index';
 import { Unauthorized } from '../helpers/errors/Unauthorized';
 import { NotFound } from '../helpers/errors/NotFound';
 import { Conflict } from '../helpers/errors/Conflict';
+import { BadRequest } from '../helpers/errors/BadRequest';
+import { pick } from '../helpers/helpers';
 
 export class GroupRepository {
   constructor() {}
@@ -17,6 +20,14 @@ export class GroupRepository {
    */
   public async create(groupData: { [key: string]: any }) {
     try {
+      const exists = await Group.findOne({
+        where: { name: groupData.name },
+      });
+
+      if (exists) {
+        return [null, new Conflict('Group with this name already exists')];
+      }
+
       const group = await Group.create(groupData);
       return [group, null];
     } catch (error) {
@@ -93,8 +104,7 @@ export class GroupRepository {
 
         const users = await group.getUsers();
         const exists = users.find((user) => user.id === parseInt(id));
-        if (exists || req['user'].id === parseInt(id))
-          return [null, new Conflict('User alread in this group')];
+        if (exists) return [null, new Conflict('User alread in this group')];
 
         let user: User = await User.findByPk(id);
         if (user) {
@@ -125,6 +135,12 @@ export class GroupRepository {
         if (group.user_id !== req['user'].id)
           return [null, new Unauthorized('Not authorised')];
 
+        if (group.user_id === parseInt(id))
+          return [
+            null,
+            new BadRequest('Cannot remove yourself from this group'),
+          ];
+
         const users = await group.getUsers();
         const groupUser = users.find((user) => user.id === parseInt(id));
         if (!groupUser)
@@ -142,27 +158,33 @@ export class GroupRepository {
   /**
    * Perform database operation to get a user's group
    *
-   * @param {Request} req
+   * @param {User} user
    * @returns
    *
    * @memberOf GroupRepository
    */
-  public async getMyGroups(req: Request) {
+  public async getGroups(user: User) {
     try {
-      const user = req['user'];
-      const groupsAdded = await user.getGroups();
-      const groupsCreated = await Group.findAll({
-        where: { user_id: user.id },
-      });
-
-      const groups = [...groupsAdded, ...groupsCreated];
+      const groups = await user.getGroups();
       if (groups.length === 0)
         return [
           null,
-          new NotFound('User has not created or added to to a group!!'),
+          new NotFound('User has not created or added to a group!!'),
         ];
 
-      return [groups, null];
+      const groupIds = pick(groups, 'id');
+      const groupsWithUsers = await Group.findAll({
+        where: {
+          id: { [Op.in]: groupIds },
+        },
+        include: {
+          model: User,
+          required: true,
+          attributes: { exclude: ['createdAt', 'updatedAt', 'password'] },
+        },
+      });
+
+      return [groupsWithUsers, null];
     } catch (error) {
       return [null, error];
     }

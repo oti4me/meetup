@@ -28,6 +28,8 @@ export class GroupController {
     const [group, error] = await this.groupRepo.create(req.body);
     if (error) return next(error);
 
+    group.addUser(req['user']);
+
     return created(res, group);
   };
 
@@ -118,9 +120,9 @@ export class GroupController {
     res: Response,
     next: (error) => {}
   ) => {
-    const [userGroup, error] = await this.groupRepo.getMyGroups(req);
+    const [groups, error] = await this.groupRepo.getGroups(req['user']);
     if (error) return next(error);
 
-    return ok(res, await userGroup);
+    return ok(res, await groups);
   };
 }

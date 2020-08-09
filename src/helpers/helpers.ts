@@ -13,3 +13,7 @@ export const removeKeys = (object: objectMap, keys: any) => {
     delete object[keys];
   }
 };
+
+export const pick = (objectArr: objectMap, key: any) => {
+  return objectArr.map((object) => object[key]);
+};

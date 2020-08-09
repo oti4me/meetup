@@ -86,6 +86,19 @@ describe('Group Controller', () => {
           done();
         });
     });
+    it('should return a 409 error if the group name already exists', (done) => {
+      request
+        .post('/api/v1/groups')
+        .set({ authorization: token })
+        .send(group)
+        .expect(409)
+        .end((err, res) => {
+          const { message } = res.body;
+          if (err) return done(err);
+          expect(message).to.equal('Group with this name already exists');
+          done();
+        });
+    });
   });
   describe('Update Group PUT: /api/v1/groups/:goupId', () => {
     it('should successfully update a group', (done) => {
@@ -197,18 +210,6 @@ describe('Group Controller', () => {
           done();
         });
     });
-    it('should return 409 if user tries to add self', (done) => {
-      request
-        .post('/api/v1/groups/1/user/1')
-        .set({ authorization: token })
-        .expect(409)
-        .end((err, res) => {
-          const { body } = res;
-          if (err) return done(err);
-          expect(body.message).to.equal('User alread in this group');
-          done();
-        });
-    });
     it('should return 404 if group not found', (done) => {
       request
         .post('/api/v1/groups/1564/user/2')
@@ -245,7 +246,7 @@ describe('Group Controller', () => {
           const { message } = res.body;
           if (err) return done(err);
           expect(message).to.equal(
-            'User has not created or added to to a group!!'
+            'User has not created or added to a group!!'
           );
           done();
         });

@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 import { notFound, errorHandler } from './middlewares/error';
 import api from './routes/index';
 
@@ -23,6 +24,7 @@ class App {
     this.app.disable('x-powered-by');
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(cors());
     this.app.use(morgan('dev'));
     this.app.use('/api/v1', api);
     this.app.get('/', this.welcome);

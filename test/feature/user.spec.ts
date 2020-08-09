@@ -43,7 +43,21 @@ describe('Users Controller', () => {
           const { body } = res;
           if (err) return done(err);
           expect(body.message).to.equal(
-            'A user with this email already exists'
+            `A user with the email '${validUser.email}' already exists`
+          );
+          done();
+        });
+    });
+    it('should return 409 on duplicate username', (done) => {
+      request
+        .post('/api/v1/users/signup')
+        .send({ ...validUser, email: 'new@email.com' })
+        .expect(409)
+        .end((err, res) => {
+          const { body } = res;
+          if (err) return done(err);
+          expect(body.message).to.equal(
+            `A user with the username '${validUser.username}' already exists`
           );
           done();
         });
